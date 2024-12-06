@@ -1,5 +1,5 @@
 import sys
-import shutil
+import os
 
 
 def main():
@@ -8,6 +8,7 @@ def main():
         command = input()
 
         builtin_commands = ["echo", "type", "exit"]
+        PATH = os.environ.get("PATH", "").split(":")
 
         if command == "exit 0":
             break
@@ -22,7 +23,12 @@ def main():
             if command in builtin_commands:
                 sys.stdout.write(f"{command} is a shell builtin\n")
             else:
-                result = shutil.which(command)
+                result = None
+                for dir in PATH:
+                    new_var = os.path.join(dir, command)
+                    if os.path.exists(new_var):
+                        result = new_var
+                        break
                 if result:
                     sys.stdout.write(f"{command} is {result}\n")
                 else:
