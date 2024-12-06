@@ -1,5 +1,6 @@
+import subprocess
 import sys
-import os
+import shutil
 
 
 def main():
@@ -8,7 +9,6 @@ def main():
         command = input()
 
         builtin_commands = ["echo", "type", "exit"]
-        PATH = os.environ.get("PATH", "").split(":")
 
         if command == "exit 0":
             break
@@ -19,20 +19,20 @@ def main():
         # start with type
         if command.startswith("type"):
             # type <command>
-            command = command[5:]
-            if command in builtin_commands:
-                sys.stdout.write(f"{command} is a shell builtin\n")
+            sub_command = command[5:]
+            if sub_command in builtin_commands:
+                sys.stdout.write(f"{sub_command} is a shell builtin\n")
             else:
-                result = None
-                for dir in PATH:
-                    new_var = os.path.join(dir, command)
-                    if os.path.exists(new_var):
-                        result = new_var
-                        break
+                result = shutil.which(sub_command)
                 if result:
-                    sys.stdout.write(f"{command} is {result}\n")
+                    sys.stdout.write(f"{sub_command} is {result}\n")
                 else:
-                    sys.stdout.write(f"{command}: not found\n")
+                    sys.stdout.write(f"{sub_command}: not found\n")
+            continue
+        if command.split() and shutil.which(command.split()[0]):
+            # Execute the command with arguments
+            args = command.split()
+            result = subprocess.run(args)
             continue
 
         sys.stdout.write(f"{command}: command not found\n")
