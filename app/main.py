@@ -8,6 +8,11 @@ def main():
         command = input()
         if command == "exit 0":
             break
+        # start with echo
+        if command.startswith("echo"):
+            sys.stdout.write(command[5:] + "\n")
+            continue
+
         sys.stdout.write(f"{command}: command not found\n")
 
 
