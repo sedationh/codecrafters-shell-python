@@ -32,7 +32,7 @@ def main():
         if command.split() and shutil.which(command.split()[0]):
             # Execute the command with arguments
             args = command.split()
-            result = subprocess.run(args)
+            subprocess.run(args)
             continue
 
         sys.stdout.write(f"{command}: command not found\n")
