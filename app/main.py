@@ -32,7 +32,8 @@ def main():
                     if len(args) == 0:
                         os.chdir(os.environ["HOME"])
                     else:
-                        os.chdir(args[0])
+                        path = os.path.expanduser(args[0])
+                        os.chdir(path)
                 except FileNotFoundError:
                     sys.stdout.write(f"cd: {args[0]}: No such file or directory\n")
             case [sub_command, *args] if shutil.which(sub_command):
