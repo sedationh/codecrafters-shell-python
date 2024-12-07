@@ -2,6 +2,7 @@ import subprocess
 import sys
 import shutil
 import os
+import shlex
 
 
 def main():
@@ -9,13 +10,24 @@ def main():
         sys.stdout.write("$ ")
         sub_command = input()
 
+        # Use shlex to split the input correctly
+        command_parts = shlex.split(sub_command)
+
         builtin_commands = ["echo", "type", "exit", "pwd"]
 
-        match sub_command.split():
+        match command_parts:
             case ["exit", "0"]:
                 break
             case ["echo", *args]:
                 sys.stdout.write(" ".join(args) + "\n")
+            case ["cat", *file_args]:
+                # Handle the cat command
+                for file in file_args:
+                    try:
+                        with open(file.strip("'\""), "r") as f:
+                            sys.stdout.write(f.read())
+                    except FileNotFoundError:
+                        sys.stdout.write(f"cat: {file}: No such file\n")
             case ["type", sub_command]:
                 if sub_command in builtin_commands:
                     sys.stdout.write(f"{sub_command} is a shell builtin\n")
